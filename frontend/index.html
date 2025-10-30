@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Student Registration Form</h2>
+
+    <form id="studentForm">
+      <input type="text" id="name" placeholder="Enter Name" required />
+      <input type="text" id="prn" placeholder="Enter PRN" required />
+      <input type="email" id="email" placeholder="Enter Email" required />
+      <button type="submit">Register</button>
+    </form>
+
+    <p id="message"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("studentForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Collect form data
+      const student = {
+        name: document.getElementById("name").value,
+        prn: document.getElementById("prn").value,
+        email: document.getElementById("email").value,
+      };
+
+      try {
+        // Send POST request to backend
+        const response = await fetch("http://localhost:3000/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(student),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          message.style.color = "green";
+          message.textContent = data.message;
+          form.reset();
+        } else {
+          message.style.color = "red";
+          message.textContent = data.message;
+        }
+      } catch (error) {
+        message.style.color = "red";
+        message.textContent = "Error connecting to server.";
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
